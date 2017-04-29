@@ -33,6 +33,3 @@ Available command line optoins
 ```
 
 If no options are passed the app will fallback to looking at ENV vars. This is done for easy running as a container. 
-
-## Roadmap
-The next planned features are UDP port fowarding and ability to forward multiple ports to multiple destinations. 
