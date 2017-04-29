@@ -57,7 +57,6 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
-
 			go handleRequest(conn, &p)
 		}
 	}
