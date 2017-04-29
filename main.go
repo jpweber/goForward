@@ -4,8 +4,10 @@ import (
 	"io"
 	"log"
 	"net"
+	"net/http"
 	"os"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/urfave/cli"
 )
 
@@ -47,6 +49,13 @@ func main() {
 			destPort:   c.String("dest-port"),
 		}
 
+		http.Handle("/metrics", promhttp.Handler())
+		// run prometheus listener via go routine so we don't block here
+		go func() {
+			log.Fatal(http.ListenAndServe(":8080", nil))
+		}()
+
+		// start proxy port listening
 		ln, err := net.Listen("tcp", ":"+p.listenPort)
 		if err != nil {
 			panic(err)
@@ -57,6 +66,7 @@ func main() {
 			if err != nil {
 				panic(err)
 			}
+			log.Println("Ready to Proxy Connections")
 			go handleRequest(conn, &p)
 		}
 	}
@@ -76,6 +86,7 @@ func handleRequest(conn net.Conn, params *netParams) {
 	log.Println("Connected Successfully")
 	go copyIO(conn, proxy)
 	go copyIO(proxy, conn)
+
 }
 
 func copyIO(src, dest net.Conn) {
