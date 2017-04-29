@@ -21,7 +21,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Name = "goProxy"
-	app.Version = "0.1.0"
+	app.Version = "0.2.0"
 
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
@@ -61,12 +61,13 @@ func main() {
 			panic(err)
 		}
 
+		log.Println("Ready to Proxy Connections")
 		for {
 			conn, err := ln.Accept()
 			if err != nil {
 				panic(err)
 			}
-			log.Println("Ready to Proxy Connections")
+
 			go handleRequest(conn, &p)
 		}
 	}
